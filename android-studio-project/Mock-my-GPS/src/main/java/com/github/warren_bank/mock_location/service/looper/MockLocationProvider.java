@@ -24,12 +24,20 @@ public class MockLocationProvider {
         this.providerName = name;
         this.ctx = ctx;
 
+        int powerUsage = 0;
+        int accuracy   = 5;
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            powerUsage = 1;
+            accuracy   = 2;
+        }
+
         LocationManager lm = (LocationManager) ctx.getSystemService(
                 Context.LOCATION_SERVICE);
         try
         {
             lm.addTestProvider(providerName, false, false, false, false, false,
-                    true, true, 0, 5);
+                    true, true, powerUsage, accuracy);
             lm.setTestProviderEnabled(providerName, true);
         } catch(SecurityException e) {
             throw new SecurityException("Not allowed to perform MOCK_LOCATION");
@@ -56,16 +64,16 @@ public class MockLocationProvider {
         mockLocation.setSpeed(0.01F);
         mockLocation.setBearing(1F);
         mockLocation.setAccuracy(3F);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= 26) {
             mockLocation.setBearingAccuracyDegrees(0.1F);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= 26) {
             mockLocation.setVerticalAccuracyMeters(0.1F);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= 26) {
             mockLocation.setSpeedAccuracyMetersPerSecond(0.01F);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= 17) {
             mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         }
         lm.setTestProviderLocation(providerName, mockLocation);
